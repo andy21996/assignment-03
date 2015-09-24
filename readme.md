@@ -1,202 +1,355 @@
-## Shape Animation
+/* ----------------------------------------------------------------------------
+* Copyright &copy; 2015 Duy Nguyen <andy21996@fullerton.edu>
+* Released under the [MIT License] (http://opensource.org/licenses/MIT)
+* ------------------------------------------------------------------------- */
+//main.cpp
+#include "Point.h"
+#include "Shape.h"
+#include <iostream>
 
-### Requirements
+//using namespace std;
+using std::cout;
+using std::cin;
+using std::endl;
 
-- Write the following classes:
-    - `Point`
-        - Describes a point in the Euclidean plane.
-            - Note: This means that the x and y values need to be either
-              `float` or `double`.
-        - Must be able to be initialized with no arguments, defaulting to the
-          point (0,0).
-            - Note: This is the same as saying that it must have a default
-              constructor.  If a constructor has default values for all
-              arguments, it fulfills this requirement and is considered a
-              default constructor.
-        - Must be able to be initialized with an x and y value.
-        - Must not be possible to change the x or y value once it has been
-          constructed.
-            - Note: This means that the member variables containing the x and y
-              values must be private (or protected), and you must implement
-              getters (but not setters) for each.
+int main()
+{
+	Point p = Point(10.3, 5.9);
+	rectangle * r = new rectangle(5.1,7.6,p);
+	r->draw();
+	r->printRectangle();
 
-    - `Shape`
-        - Must contain the following pure virtual function:
+	p = Point(20.3, 5.6);
+	square * s = new square(10.8, p);
+	s->draw();
+	s->printSquare();
 
-            ```c++
-            virtual bool contains(const Point & p) const = 0;
-            ```
+	cout << endl << endl;
+	system("Pause");
+	return 0;
+}
 
-        - Should also contain a virtual default destructor:
-
-            ```c++
-            virtual ~Shape() {}
-            ```
-
-          This allowes for child classes being handled through a pointer of
-          type `Shape` to have their destructors called when the variable goes
-          out of scope or is `delete`d (search "cpp polymorphism").
-
-    - `Rectangle` and `Ellipse`
-        - Must inherit from `Shape`, and be concrete classes (i.e. not abstract
-          classes, i.e. they must override all `Shape`s pure virtual
-          functions).
-
-    - `Square`
-        - Must inherit from `Rectangle`.
-
-    - `Circle`
-        - Must inherit from `Ellipse`.
-
-- Write a function with the following prototype (probably in `main.cpp`):
-
-    ```c++
-    /**
-     * A function to draw the `Shape`s in `s` in a terminal.
-     *
-     * Arguments:
-     * - `count`: The number of `Shape`s in `s`.
-     * - `s`: An array containing pointers to each `Shape` to draw.
-     *
-     * Notes:
-     * - A terminal window is typically 80 columns wide by 25 lines high.
-     * - The width:height aspect ratio of a terminal character is approximately
-     *   1:1.9.
-     */
-    void draw(const int count, const Shape * const s[]);
-    ```
-
-  This function should iterate through every column on every line.  If the
-  point represented by the character at that location is contained in any of
-  the `Shape`s, it should print a `"*"` (or something).  If not, it should
-  print a `" "` (or something).
-
-  This function should also scale the shapes correctly, according the aspect
-  ratio of the terminal characters.  It would probably be best to use several
-  constants: one to represent the number of columns, one to represent the
-  factor used to convert the column number to the x value represented by a
-  character in that column, and similarly for the number of lines and the
-  factor used to convert the line number to the corresponding y value.
-
-  Optionally, you may also draw a border, where the top and bottom of each
-  column is a `"-"` (or something), and the first and last character of each
-  line is a `"|"` (or something).
-
-- Use the following template for `main()`:
-
-    ```c++
-    int main() {
-        // declare constants for the number of frames to draw and the
-        // amount of time to sleep after drawing each frame
-
-        // for each frame
-
-            // create some shapes (with values depending on the current frame
-            // number)
-
-            // put pointers to them in an array
-            //
-            // for example, given a `Rectangle r` and a `Square s`:
-            Shape * shapes[] = { &r, &s, };
-            // this is possible because `Rectangle`s and `Squares`, and all
-            // your other shapes, inherit from `Shape`
-
-            // draw the shapes in the terminal
-            //
-            // for example, given the `shapes` array above:
-            draw( sizeof(shapes) / sizeof(Shape *), shapes );
-
-            // wait before drawing the next frame
-            //
-            // for example:
-            std::this_thread::sleep_for(std::chrono::milliseconds(frameSleep));
-            // if you'd like to know more about what this line is doing, look
-            // up the documentation for `std::this_thread::sleep_for` and
-            // `std::chrono::milliseconds()`.
-
-        return 0;  // success
-    }
-    ```
-
-  If you'd like to write your `main()` in a different way that's fine, so long
-  as it accomplishes the same goal.
+//Point.h
+#ifndef POINT_H
+#define POINT_H
 
 
-#### Design Constraints
+#include <string>
+#include <iostream>
 
-- Classes must have both `.h` and `.cpp` files, with member functions defined
-  in the `.cpp` files unless they are truly trivial.  If it makes sense, you
-  may put multiple classes into one pair of `.h` and `.cpp` files.  I suggest
-  having a `point.h` and `point.cpp`, and a `shapes.h` and `shapes.cpp`.
+using std::cout;
+using std::cin;
+using std::endl;
+class Point
+{
+public:
+	Point();
+	Point(double x, double y);
+		
+	double GetX() const;
+	void SetX(double x);
+	double GetY() const;
+	void SetY(double y);
+	void printPoint() const;
+	
+private:
+	double xPos;
+	double yPos;
+};
 
-- `main()` must have its own `.cpp` file.  I suggest calling it `main.cpp`.
+#endif
 
-- Declare member functions and function arguments as `const` when appropriate
-  (pretty much whenever possible).
+//Shape.h
+#ifndef SHAPE_H
+#define SHAPE_H
 
-- Use "include guards" in all `.h` files.  Be sure to give the preprocessor
-  variable a name corresponding to the file name.  For example, in `point.h`:
+#include <iostream>
+#include "Point.h"
 
-    ```c++
-    #ifndef POINT_H
-    #define POINT_H
-    // ----------------------------------------------------------------------------
+using std::cout;
+using std::cin;
+using std::endl;
 
-    // ... everything besides the copyright information and file description
+class shape
+{
+public:
+	virtual bool contains(const Point & p) const = 0;
+	virtual ~shape() {}
+protected:
+	Point p;
+};
 
-    // ----------------------------------------------------------------------------
-    #endif  // POINT_H
-    ```
+class rectangle : public shape
+{
+public:
+	rectangle();
+	rectangle(double l, double w, Point upLeft);
+	bool contains(const Point & p) const;
+	~rectangle();
 
-#### Style
+	double GetL() const;
+	double GetW() const;
+	Point GetUpLeft() const;
+	void printRectangle() const;
+	void draw() const;
 
-- Document and format your code well and consistently.
-- Wrap lines at 79 or 80 columns whenever possible.
-- End your file with a blank line.
-- Do *not* use `using namespace std;`.  You may get around typing `std::` in
-  front of things or with, e.g., `using std::cout;`.
-- Include your copyright and license information at the top of every file,
-  followed by a brief description of the file's contents, e.g.
+private:
+	double length;
+	double width;
+	Point p;
+};
 
-    ```c++
-    /* ----------------------------------------------------------------------------
-     * Copyright &copy; 2015 Ben Blazak <bblazak@fullerton.edu>
-     * Released under the [MIT License] (http://opensource.org/licenses/MIT)
-     * ------------------------------------------------------------------------- */
+class square : public rectangle
+{
+public:
+	square();
+	square(double s, Point upLeft);
+	~square();
 
-    /**
-     * A short program to print "Hello World!" to standard output.
-     */
-    ```
+	double GetSide() const;
+	Point GetUpLeft() const;
+	void printSquare() const;
+	void draw() const;
 
+private:
+	double side;
+	Point p; //upper left point
+};
 
-### Assumptions
+class ellipse : public shape
+{
+public:
+	ellipse();
+	ellipse(double x, double y);
+	bool contains(const Point & p) const;
+	~ellipse();
 
-- A terminal window is 80 columns wide by 25 lines high.
-- The width:height aspect ratio of a terminal character is approximately 1:1.9.
+	double GetX() const;
+	double GetY() const;
+	void printEllipse() const;
+	void draw() const;
 
+private:
+	double radius;
+};
 
-### Notes
+class circle : public ellipse
+{
+public:
+	circle();
+	circle(double x, double y);
+	~circle();
 
-- If you need help creating a file in GitHub (especially if you're still using
-  the web interface instead of the desktop app or the terminal) see [GitHub
-  Help / Manipulating Files / Creating new
-  files](https://help.github.com/articles/creating-new-files/).
+	double GetX() const;
+	double GetY() const;
+	void printCircle() const;
+	void draw() const;
 
-- If you'd like more of a challenge, try implementing more complex shapes or
-  animations.  Be creative!
+private:
+	double radius;
+};
 
-- If you'd like to use a graphics library of some sort, perhaps
-  [SFML](http://www.sfml-dev.org) please do!  I wanted to use one rather than
-  simply printing to the terminal, but I couldn't justify making it a
-  requirement (and I also didn't have enough time to experiment).
+#endif
 
+//Point.cpp
+#include "Point.h"
 
--------------------------------------------------------------------------------
-[![Creative Commons License](https://i.creativecommons.org/l/by/4.0/88x31.png)]
-(http://creativecommons.org/licenses/by/4.0/)  
-Copyright &copy; 2015 Ben Blazak <bblazak@fullerton.edu>  
-This work is licensed under a [Creative Commons Attribution 4.0 International
-License] (http://creativecommons.org/licenses/by/4.0/)  
-Project located at <https://github.com/2015-fall-csuf-benblazak-cpsc-121>
+Point::Point()
+{
+	xPos = 0.0;
+	yPos = 0.0;
+}
 
+Point::Point(double x, double y)
+{
+	xPos = x;
+	yPos = y;
+}
+
+double Point::GetX() const
+{
+	return xPos;
+}
+void Point::SetX(double x)
+{
+	xPos = x;
+}
+double Point::GetY() const
+{
+	return yPos;
+}
+void Point::SetY(double y)
+{
+	yPos = y;
+}
+void Point::printPoint() const
+{
+	cout << "(" << GetX() << ", " << GetY() << ")" << endl;
+}
+
+//Shape.cpp
+
+#include "Shape.h"
+#include <math.h>
+
+rectangle::rectangle()
+{
+	length = 0;
+	width = 0;
+	p.SetX(0);
+	p.SetY(0);
+}
+rectangle::rectangle(double l, double w, Point upLeft)
+{
+	length = l;
+	width = w;
+	p.SetX(upLeft.GetX());
+	p.SetY(upLeft.GetY());
+}
+bool rectangle::contains(class Point const &) const 
+{
+	return true;
+}
+rectangle::~rectangle() {}
+double rectangle::GetL() const
+{
+	return length;
+}
+double rectangle::GetW() const
+{
+	return width;
+}
+Point rectangle::GetUpLeft() const
+{
+	return p;
+}
+void rectangle::printRectangle() const
+{
+	cout << "This is a rectangle: " << endl
+		<< "with upper left corner at ";
+		p.printPoint();
+		cout << "Length = " << length << ", Width = " << width << endl;
+
+}
+void rectangle::draw() const
+{
+	Point p = GetUpLeft();
+	int x = static_cast<int>(round(p.GetX() * 1.9)),
+		y = static_cast<int>(round(p.GetY())),
+		w = static_cast<int>(round(GetW())),
+		l = static_cast<int>(round(GetL() * 1.9));
+
+	for (int i = 0; i < y - 1; i++)
+		cout << endl;
+	for (int i = y; i < y + w; i++)
+	{
+		for (int j = 0; j < x - 1; j++)
+			cout << " ";
+		for (int j = x; j < x + l; j++)
+			cout << "*";
+		cout << endl;
+	}
+}
+
+square::square()
+{
+	side = 0;
+	p.SetX(0);
+	p.SetY(0);
+}
+square::square(double s, Point upLeft)
+{
+	side = s;
+	p.SetX(upLeft.GetX());
+	p.SetY(upLeft.GetY());
+}
+square::~square() {}
+double square::GetSide() const
+{
+	return side;
+}
+Point square::GetUpLeft() const
+{
+	return p;
+}
+void square::printSquare() const
+{
+	cout << "This is a square: " << endl
+		<< "with upper left corner at (" << p.GetX() << "," << p.GetY() << ")" << endl
+		<< "Side: " << side << endl;
+}
+void square::draw() const
+{
+	Point p = GetUpLeft();
+	int x = static_cast<int>(round(p.GetX() * 1.9)),
+		y = static_cast<int>(round(p.GetY())),
+		w = static_cast<int>(round(GetSide())),
+		l = static_cast<int>(round(GetSide() * 1.9));
+
+	for (int i = 0; i < y - 1; i++)
+		cout << endl;
+	for (int i = y; i < y + w; i++)
+	{
+		for (int j = 0; j < x - 1; j++)
+			cout << " ";
+		for (int j = x; j < x + l; j++)
+			cout << "*";
+		cout << endl;
+	}
+}
+
+ellipse::ellipse()
+{
+
+}
+ellipse::ellipse(double x, double y)
+{
+	
+}
+bool ellipse::contains(class Point const &) const 
+{
+	return true;
+}
+ellipse::~ellipse() {}
+double ellipse::GetX() const
+{
+	return 0;
+}
+double ellipse::GetY() const
+{
+	return 0;
+}
+void ellipse::printEllipse() const
+{
+
+}
+void ellipse::draw() const
+{
+
+}
+
+circle::circle()
+{
+
+}
+circle::circle(double x, double y)
+{
+
+}
+circle::~circle() {}
+double circle::GetX() const
+{
+	return 0;
+}
+double circle::GetY() const
+{
+	return 0;
+}
+void circle::printCircle() const
+{
+
+}
+void circle::draw() const
+{
+
+}
