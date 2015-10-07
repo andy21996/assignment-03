@@ -1,62 +1,61 @@
 /* ----------------------------------------------------------------------------
- * Copyright &copy; 2015 Ben Blazak <bblazak@fullerton.edu>
- * Released under the [MIT License] (http://opensource.org/licenses/MIT)
- * ------------------------------------------------------------------------- */
+* Copyright &copy; 2015 Duy Nguyen <andy21996@fullerton.edu>
+* Released under the [MIT License] (http://opensource.org/licenses/MIT)
+* ------------------------------------------------------------------------- */
 
-/**
- * Classes representing shapes in a Euclidean plane.
- */
+#ifndef SHAPE_H
+#define SHAPE_H
 
-#ifndef SHAPES_H
-#define SHAPES_H
-// ----------------------------------------------------------------------------
+#include <iostream>
+#include "Point.h"
 
-#include "point.h"
+using std::cout;
+using std::cin;
+using std::endl;
 
-class Shape {
-    public:
-        virtual ~Shape() {}
-        virtual bool contains(const Point & p) const = 0;  // pure virtual
+class Shape
+{
+public:
+	virtual bool contains(const Point & p) const = 0;
+	virtual ~Shape() {}
 };
 
-// ----------------------------------------------------------------------------
+class Rectangle : public Shape 
+{
+public:
+	Rectangle(Point corner = Point(), double length = 0, double width = 0);
 
-class Rectangle : public Shape {
-    private:
-        Point center;
-        float dx;
-        float dy;
+	bool contains(const Point & p) const;
 
-    public:
-        Rectangle(Point center = Point(), float dx = 0, float dy = 0);
-
-        bool contains(const Point & p) const;
+private:
+	Point corner;
+	double length;
+	double width;
 };
 
-class Square : public Rectangle {
-    public:
-        Square(Point center = Point(), float side = 0);
+class Square : public Rectangle 
+{
+public:
+	Square(Point corner = Point(), double side = 0);
 };
 
-// ----------------------------------------------------------------------------
+class Ellipse : public Shape
+{
+public:
+	Ellipse(Point foci1 = Point(), Point foci2 = Point(), double distance = 0);
 
-class Ellipse : public Shape {
-    private:
-        Point f1;
-        Point f2;
-        float radius;
+	bool contains(const Point& p) const;
 
-    public:
-        Ellipse(Point f1 = Point(), Point f2 = Point(), float radius = 0);
-
-        bool contains(const Point & p) const;
+private:
+	Point foci1;
+	Point foci2;
+	double distance;
 };
 
-class Circle : public Ellipse {
-    public:
-        Circle(Point center = Point(), float radius = 0);
+class Circle : public Ellipse
+{
+public:
+	Circle(Point center = Point(), double radius = 0);
 };
 
-// ----------------------------------------------------------------------------
-#endif  // SHAPES_H
-
+#endif
