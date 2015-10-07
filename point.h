@@ -1,30 +1,34 @@
 /* ----------------------------------------------------------------------------
- * Copyright &copy; 2015 Ben Blazak <bblazak@fullerton.edu>
- * Released under the [MIT License] (http://opensource.org/licenses/MIT)
- * ------------------------------------------------------------------------- */
-
-/**
- * A class representing a point in a Euclidean plane.
- */
+* Copyright &copy; 2015 Duy Nguyen <andy21996@fullerton.edu>
+* Released under the [MIT License] (http://opensource.org/licenses/MIT)
+* ------------------------------------------------------------------------- */
 
 #ifndef POINT_H
 #define POINT_H
-// ----------------------------------------------------------------------------
 
-class Point {
-    private:
-        float x;
-        float y;
 
-    public:
-        Point(float x = 0, float y = 0);
+#include <string>
+#include <iostream>
 
-        float getX() const;
-        float getY() const;
-
-        float distance(const Point & a) const;
+using std::cout;
+using std::cin;
+using std::endl;
+class Point
+{
+public:
+	Point();
+	Point(double x, double y);
+		
+	double GetX() const;
+	double GetY() const;
+	double distance(const Point & a) const;
+	
+private:
+	double xPos;
+	double yPos;
 };
 
-// ----------------------------------------------------------------------------
-#endif  // POINT_H
+#endif
+
+
 
